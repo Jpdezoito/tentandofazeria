@@ -15,6 +15,8 @@ if str(_ROOT) not in sys.path:
     sys.path.insert(0, str(_ROOT))
 
 from core.config import config_from_env, db_path  # noqa: E402
+from core.knowledge.store import init_db as init_knowledge_db  # noqa: E402
+from core.memoria.long import init_db as init_long_memory_db  # noqa: E402
 from core.memoria.store import connect, init_db  # noqa: E402
 from core.runtime.orchestrator import ChatRuntime  # noqa: E402
 from core.audio.stt_vosk import transcribe_wav_vosk  # noqa: E402
@@ -76,6 +78,8 @@ def main(argv: list[str] | None = None) -> int:
 
     conn = connect(db_path(cfg))
     init_db(conn)
+    init_knowledge_db(conn)
+    init_long_memory_db(conn)
     runtime = ChatRuntime(cfg, conn)
 
     try:

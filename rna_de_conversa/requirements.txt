@@ -1,4 +1,12 @@
 # rna_de_conversa
+# Runtime dependencies (RAG vector index):
+scikit-learn>=1.3
+numpy>=1.24
+
+# Optional vector DB (Chroma) + embeddings:
+chromadb>=0.5.5
+sentence-transformers>=2.6
+
 # Runtime dependencies: standard library only.
 # Optional: install Ollama separately (desktop app / service): https://ollama.com
 #
@@ -8,5 +16,15 @@
 # - Audio recording: sounddevice numpy
 # - Offline STT: vosk (+ download a Vosk model folder)
 # - Offline TTS: pyttsx3
+# - OCR for image ingest: pillow pytesseract
+# - Image captioning: transformers torch
+
+# Optional fine-tuning (LoRA/QLoRA):
+transformers>=4.38
+torch>=2.1
+datasets>=2.18
+peft>=0.9
+accelerate>=0.27
+# QLoRA only (GPU): bitsandbytes
 
 pytest>=8.0

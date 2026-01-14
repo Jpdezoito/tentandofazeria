@@ -1,0 +1,26 @@
+{
+  "paths": {
+    "conversa": "rna_de_conversa",
+    "buscarpastas": "treino_rna_buscarpastas",
+    "qualquer_imagem": "treino_rna_qualquer_imagem",
+    "video": "rna_de_video",
+    "treinos": "ia_treinos",
+    "data": "data",
+    "models": "models",
+    "eval": "eval",
+    "logs": "logs"
+  },
+  "safety": {
+    "allowed_roots": []
+  },
+  "permissions": {
+    "mode": "safe",
+    "actions": {
+      "buscar": true,
+      "imagem": true,
+      "video": true,
+      "audio": true,
+      "chat": true
+    }
+  }
+}
