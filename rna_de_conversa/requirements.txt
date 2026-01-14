@@ -1,0 +1,12 @@
+# rna_de_conversa
+# Runtime dependencies: standard library only.
+# Optional: install Ollama separately (desktop app / service): https://ollama.com
+#
+# Optional multimodal extras (install only if you want these features):
+# - Screen capture: pillow
+# - Webcam capture: opencv-python
+# - Audio recording: sounddevice numpy
+# - Offline STT: vosk (+ download a Vosk model folder)
+# - Offline TTS: pyttsx3
+
+pytest>=8.0

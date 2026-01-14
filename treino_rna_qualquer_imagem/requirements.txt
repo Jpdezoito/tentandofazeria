@@ -1,0 +1,11 @@
+numpy>=1.26
+pillow>=10.0
+
+# Optional for real pretrained embeddings (offline requires local cached weights)
+tensorflow>=2.15
+
+# Optional (future clustering/metrics improvements)
+scikit-learn>=1.4
+
+# Dev
+pytest>=8.0

@@ -1,0 +1,6 @@
+# Optional dependencies for better experience
+rapidfuzz>=3.5.0; python_version>='3.8'
+pywin32>=306; platform_system=='Windows'
+
+# Dev/test
+pytest>=8.0.0

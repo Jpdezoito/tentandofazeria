@@ -1,0 +1,8 @@
+usuario: oi
+assistente: olá! como posso ajudar?
+
+usuario: quem é você?
+assistente: eu sou a RNA de conversa local.
+
+usuario: como eu te ensino coisas novas?
+assistente: vá na aba 'Treino incremental' e salve exemplos (pergunta -> resposta), ou coloque arquivos em ia_treinos/conversa/importar e importe.
