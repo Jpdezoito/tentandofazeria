@@ -29,6 +29,24 @@ Ou pelo hub:
 python main_ia.py
 ```
 
+## RAG (conhecimento por arquivos)
+
+Para transformar arquivos em conhecimento consultavel:
+
+```powershell
+python rna_de_conversa\tools\cli_ingest.py --path C:\caminho\para\pasta_ou_arquivo
+```
+
+Formatos aceitos: `.txt`, `.md`, `.json`, `.jsonl`, `.yaml`, `.yml`, `.py`, `.log`, `.csv`, `.html`, `.htm`, `.zip`.
+PDF e suportado se `PyPDF2` estiver instalado.
+
+## Memoria longa e perfil
+
+Comandos no chat:
+
+- `/lembrar chave=valor`
+- `/pref chave=valor`
+
 ## Ollama (opcional)
 
 O app:

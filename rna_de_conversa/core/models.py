@@ -16,3 +16,18 @@ class Example:
 class Retrieved:
     example: Example
     score: float
+
+
+@dataclass(frozen=True)
+class KnowledgeChunk:
+    chunk_id: int
+    source: str
+    text: str
+    added_at: datetime
+    meta_json: str = ""
+
+
+@dataclass(frozen=True)
+class RetrievedChunk:
+    chunk: KnowledgeChunk
+    score: float

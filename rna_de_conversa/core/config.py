@@ -13,6 +13,13 @@ def _env_flag(name: str) -> bool:
     return v in {"1", "true", "yes", "y", "on"}
 
 
+def _env_str(name: str, default: str = "") -> str:
+    import os
+
+    v = os.environ.get(name)
+    return str(v).strip() if v is not None else default
+
+
 @dataclass(frozen=True)
 class AppConfig:
     app_name: str = "RNA_Conversa"
@@ -32,6 +39,19 @@ class AppConfig:
     retrieval_topk: int = 3
     retrieval_min_score: float = 0.18
 
+    # Knowledge / RAG behavior
+    knowledge_topk: int = 4
+    knowledge_min_score: float = 0.16
+    knowledge_chunk_tokens: int = 420
+    knowledge_chunk_overlap: int = 60
+    knowledge_build_index: bool = True
+    knowledge_index_name: str = "knowledge_index.pkl"
+    knowledge_index_max_features: int = 50000
+    knowledge_vector_backend: str = "tfidf"  # tfidf | chroma
+    knowledge_chroma_dir_name: str = "knowledge_chroma"
+    knowledge_chroma_collection: str = "knowledge_chunks"
+    knowledge_embedding_model: str = "sentence-transformers/all-MiniLM-L6-v2"
+
     # Ollama
     ollama_base_url: str = "http://localhost:11434"
     ollama_timeout_s: float = 30.0
@@ -40,13 +60,23 @@ class AppConfig:
 def config_from_env() -> AppConfig:
     """Build config with safe defaults when debugging."""
 
+    backend = _env_str("IANOVA_VECTOR_BACKEND", "").strip().lower()
+    emb_model = _env_str("IANOVA_EMBEDDING_MODEL", "").strip()
+
     if not _env_flag("IANOVA_SAFE_DEBUG"):
+        if backend or emb_model:
+            return AppConfig(
+                knowledge_vector_backend=backend or AppConfig.knowledge_vector_backend,
+                knowledge_embedding_model=emb_model or AppConfig.knowledge_embedding_model,
+            )
         return AppConfig()
 
     return AppConfig(
         session_max_turns=6,
         retrieval_topk=2,
         ollama_timeout_s=10.0,
+        knowledge_vector_backend=backend or AppConfig.knowledge_vector_backend,
+        knowledge_embedding_model=emb_model or AppConfig.knowledge_embedding_model,
     )
 
 
@@ -67,6 +97,17 @@ def assistant_base_dir(config: AppConfig) -> Path:
 
 def treinos_dir(config: AppConfig) -> Path:
     d = assistant_base_dir(config) / config.treinos_dir_name
+    d.mkdir(parents=True, exist_ok=True)
+    return d
+
+
+def knowledge_index_path(config: AppConfig) -> Path:
+    d = treinos_dir(config)
+    return d / config.knowledge_index_name
+
+
+def knowledge_chroma_dir(config: AppConfig) -> Path:
+    d = treinos_dir(config) / config.knowledge_chroma_dir_name
     d.mkdir(parents=True, exist_ok=True)
     return d
 
