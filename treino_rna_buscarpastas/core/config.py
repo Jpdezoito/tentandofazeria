@@ -4,6 +4,13 @@ from dataclasses import dataclass
 from pathlib import Path
 
 
+def _env_flag(name: str) -> bool:
+    import os
+
+    v = str(os.environ.get(name, "")).strip().lower()
+    return v in {"1", "true", "yes", "y", "on"}
+
+
 @dataclass(frozen=True)
 class AppConfig:
     """Configuration for indexing/search behavior."""
@@ -44,6 +51,27 @@ class AppConfig:
     # File types considered executable (safe-ish to launch)
     executable_exts: tuple[str, ...] = (".exe", ".bat", ".cmd", ".com", ".ps1")
     shortcut_exts: tuple[str, ...] = (".lnk",)
+
+
+def config_from_env() -> AppConfig:
+    """Build config with safe defaults when debugging.
+
+    Set IANOVA_SAFE_DEBUG=1 to reduce CPU/disk-heavy operations.
+    """
+
+    if not _env_flag("IANOVA_SAFE_DEBUG"):
+        return AppConfig()
+
+    return AppConfig(
+        enable_drive_scan=False,
+        max_files_per_root=35_000,
+        max_drive_files_total=25_000,
+        max_drive_scan_seconds=6.0,
+        limited_max_depth=2,
+        limited_max_entries=15_000,
+        limited_timeout_seconds=2.0,
+        max_results=15,
+    )
 
 
 def project_root() -> Path:

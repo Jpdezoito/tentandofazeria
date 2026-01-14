@@ -4,6 +4,13 @@ from dataclasses import dataclass
 from pathlib import Path
 
 
+def _env_flag(name: str) -> bool:
+    import os
+
+    v = str(os.environ.get(name, "")).strip().lower()
+    return v in {"1", "true", "yes", "y", "on"}
+
+
 @dataclass(frozen=True)
 class AppConfig:
     app_name: str = "RNA_Video"
@@ -39,6 +46,25 @@ class AppConfig:
 
     # Replay buffer
     replay_per_class: int = 30
+
+
+def config_from_env() -> AppConfig:
+    """Build config with safe defaults when debugging.
+
+    Set IANOVA_SAFE_DEBUG=1 to reduce heavy video/embedding operations.
+    """
+
+    if not _env_flag("IANOVA_SAFE_DEBUG"):
+        return AppConfig()
+
+    return AppConfig(
+        backbone="fallback_hist",
+        max_frames_per_video=6,
+        min_frame_step_s=1.25,
+        video_url_timeout_s=10.0,
+        video_url_max_bytes=80 * 1024 * 1024,
+        replay_per_class=12,
+    )
 
 
 def project_root() -> Path:

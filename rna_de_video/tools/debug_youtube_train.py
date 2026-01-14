@@ -15,7 +15,7 @@ if str(_ROOT) not in sys.path:
 
 
 from rna_de_video.core.classifier import PrototypeClassifier
-from rna_de_video.core.config import AppConfig, dataset_db_path
+from rna_de_video.core.config import AppConfig, config_from_env, dataset_db_path
 from rna_de_video.core.dataset import connect, init_db, ensure_video, set_embedding, set_label_for_segment
 from rna_de_video.core.embedding import build_extractor
 from rna_de_video.core.embedding_cache import get_or_compute_video_embedding, load_embedding
@@ -64,7 +64,7 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--end", type=float, default=None)
     args = ap.parse_args(argv)
 
-    config = AppConfig()
+    config = config_from_env()
     reg = build_default_registry()
     mode_id = str(args.mode).strip() or "appearance"
     mode = reg.get(mode_id)

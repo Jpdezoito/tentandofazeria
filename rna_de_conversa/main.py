@@ -10,11 +10,11 @@ if str(_ROOT) not in sys.path:
     sys.path.insert(0, str(_ROOT))
 
 from app.gui import RnaConversaApp
-from core.config import AppConfig
+from core.config import config_from_env
 
 
 def main() -> None:
-    cfg = AppConfig()
+    cfg = config_from_env()
     app = RnaConversaApp(cfg)
     app.title("RNA - Conversa")
     app.minsize(1120, 720)

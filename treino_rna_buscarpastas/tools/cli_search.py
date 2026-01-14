@@ -13,7 +13,7 @@ _ROOT = _THIS.parents[1]
 if str(_ROOT) not in sys.path:
     sys.path.insert(0, str(_ROOT))
 
-from core.config import AppConfig, aliases_path, index_db_path, stats_path  # noqa: E402
+from core.config import aliases_path, config_from_env, index_db_path, stats_path  # noqa: E402
 from core.index_db import connect, init_db  # noqa: E402
 from core.normalize import normalize_text  # noqa: E402
 from core.quick_search import QuickSearchParams, quick_search  # noqa: E402
@@ -37,12 +37,27 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--query", required=True)
     args = ap.parse_args(argv)
 
+    def emit_ok(payload: dict) -> None:
+        out = {"ok": True, "tool": "buscarpastas", "version": 1}
+        out.update(payload)
+        print(json.dumps(out, ensure_ascii=False))
+
+    def emit_error(message: str) -> None:
+        out = {
+            "ok": False,
+            "tool": "buscarpastas",
+            "version": 1,
+            "error": {"message": str(message)},
+            "results": [],
+        }
+        print(json.dumps(out, ensure_ascii=False))
+
     q = (args.query or "").strip()
     if not q:
-        print(json.dumps({"results": []}, ensure_ascii=False))
+        emit_ok({"results": []})
         return 0
 
-    config = AppConfig()
+    config = config_from_env()
     store = PreferenceStore(aliases_path=aliases_path(config), stats_path=stats_path(config))
     store.ensure_files()
 
@@ -54,16 +69,17 @@ def main(argv: list[str] | None = None) -> int:
         # Layer 1: quick search
         quick = quick_search(store, config, QuickSearchParams(query_text=q, query_norm=qn, action="open"))
         if quick:
-            out = {"results": [_result_to_dict(r) for r in quick]}
-            print(json.dumps(out, ensure_ascii=False))
+            emit_ok({"results": [_result_to_dict(r) for r in quick]})
             return 0
 
         # Layer 2: indexed search (if index exists)
         cancel = threading.Event()
         hits = search(conn, store, config, SearchParams(query_text=q, query_norm=qn, action="open"), cancel)
-        out = {"results": [_result_to_dict(r) for r in hits]}
-        print(json.dumps(out, ensure_ascii=False))
+        emit_ok({"results": [_result_to_dict(r) for r in hits]})
         return 0
+    except Exception as e:
+        emit_error(str(e))
+        return 2
     finally:
         try:
             conn.close()

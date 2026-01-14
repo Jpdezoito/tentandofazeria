@@ -740,20 +740,47 @@ class IaHubApp(tk.Tk):
                     errors="replace",
                 )
                 raw = (proc.stdout or "").strip()
+
+                # Try parsing JSON even when the tool fails (so it can return structured errors).
+                obj = None
+                if raw:
+                    try:
+                        obj = json.loads(raw)
+                    except Exception:
+                        obj = None
+
                 if proc.returncode != 0:
+                    if isinstance(obj, dict) and ("error" in obj or obj.get("ok") is False):
+                        err_msg = ""
+                        if isinstance(obj.get("error"), dict):
+                            err_msg = str(obj.get("error", {}).get("message") or "")
+                        err_msg = err_msg or str(obj.get("message") or "")
+                        err_msg = err_msg or (proc.stderr or "").strip() or f"exit={proc.returncode}"
+                        tool_name = str(obj.get("tool") or title)
+                        self._post_log(f"Erro ({tool_name}): {err_msg}")
+                        return
+
                     err = (proc.stderr or raw or f"exit={proc.returncode}").strip()
                     self._post_log(f"Erro: {err}")
                     return
 
-                try:
-                    obj = json.loads(raw) if raw else {}
-                except Exception as e:
-                    self._post_log(f"Falha ao ler JSON: {e}")
-                    self._post_log(raw)
+                if obj is None:
+                    if raw:
+                        self._post_log(raw)
                     return
 
                 # Pretty print key parts.
                 if isinstance(obj, dict):
+                    # Envelope support
+                    if obj.get("ok") is False:
+                        msg = ""
+                        if isinstance(obj.get("error"), dict):
+                            msg = str(obj.get("error", {}).get("message") or "")
+                        msg = msg or str(obj.get("message") or "")
+                        msg = msg or "Erro desconhecido"
+                        self._post_log(f"Erro: {msg}")
+                        return
+
                     if "results" in obj and isinstance(obj.get("results"), list):
                         res = obj.get("results") or []
                         if not res:
@@ -882,6 +909,14 @@ class IaHubApp(tk.Tk):
         self.assistant_entry_var.set("")
 
         low = text.lower().strip()
+        if low in {"/help", "help", "ajuda", "/ajuda"}:
+            self._log(
+                "Comandos: /buscar <texto> | /abrir <n> | /web <texto> | (cole um caminho/URL de vídeo/imagem/áudio e eu reconheço)"
+            )
+            return
+
+        if self._maybe_route_text_as_attachment(text):
+            return
         if low.startswith("/web "):
             self._open_web_search(text[5:].strip())
             return
@@ -902,6 +937,73 @@ class IaHubApp(tk.Tk):
 
         # Default: chat
         self._assistant_chat(text)
+
+    def _maybe_route_text_as_attachment(self, text: str) -> bool:
+        t = (text or "").strip().strip('"').strip("'")
+        if not t:
+            return False
+
+        # URL video: let rna_de_video handle it
+        if t.lower().startswith("http://") or t.lower().startswith("https://"):
+            # If it's clearly a web page request, let /web handle it.
+            # Otherwise try as video URL (direct or YouTube).
+            self._assistant_video_from_ref(t)
+            return True
+
+        p = Path(t)
+        if not p.exists() or not p.is_file():
+            return False
+
+        ext = p.suffix.lower()
+        if ext in {".png", ".jpg", ".jpeg", ".bmp", ".gif", ".webp"}:
+            self._assistant_image_from_path(p)
+            return True
+        if ext in {".mp4", ".mkv", ".avi", ".mov", ".webm", ".m4v"}:
+            self._assistant_video_from_ref(str(p))
+            return True
+        if ext in {".wav", ".mp3", ".m4a", ".aac", ".ogg", ".flac"}:
+            self._assistant_audio_from_path(p)
+            return True
+
+        return False
+
+    def _assistant_image_from_path(self, img: Path) -> None:
+        tool = self.paths.qualquer_imagem / "tools" / "cli_classify.py"
+        if not tool.exists():
+            self._log(f"Não achei: {tool}")
+            return
+
+        py = self._python_for_tools()
+        args = [py, str(tool), "--image", str(img)]
+        self._run_json_tool("Reconhecer imagem", args, cwd=self.paths.qualquer_imagem)
+
+    def _assistant_video_from_ref(self, ref: str) -> None:
+        tool = self.paths.video / "tools" / "cli_classify.py"
+        if not tool.exists():
+            self._log(f"Não achei: {tool}")
+            return
+
+        mode = "appearance"
+        py = self._python_for_tools()
+        args = [py, str(tool), "--video", str(ref), "--mode", mode]
+        self._run_json_tool("Reconhecer vídeo", args, cwd=self.paths.video)
+
+    def _assistant_audio_from_path(self, audio: Path) -> None:
+        tool = self.paths.conversa / "tools" / "cli_chat.py"
+        if not tool.exists():
+            self._log(f"Não achei: {tool}")
+            return
+
+        use_ollama = bool(self.use_ollama_var.get())
+        model = (self.ollama_model_var.get() or "").strip()
+
+        py = self._python_for_tools()
+        args = [py, str(tool), "--audio", str(audio)]
+        if use_ollama:
+            args.append("--use-ollama")
+        if use_ollama and model:
+            args += ["--model", model]
+        self._run_json_tool("Áudio -> Texto -> Conversa", args, cwd=self.paths.conversa)
 
     def _assistant_open_index(self, s: str) -> None:
         try:

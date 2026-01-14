@@ -8,14 +8,14 @@ if str(_PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(_PROJECT_ROOT))
 
 from core.classifier import PrototypeClassifier
-from core.config import AppConfig, dataset_db_path
+from core.config import config_from_env, dataset_db_path
 from core.dataset import connect, init_db
 from core.embedding_cache import load_embedding
 from core.trainer import Trainer
 
 
 def main() -> None:
-    cfg = AppConfig()
+    cfg = config_from_env()
     conn = connect(dataset_db_path(cfg))
     init_db(conn)
 

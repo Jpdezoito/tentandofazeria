@@ -13,7 +13,7 @@ if str(_PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(_PROJECT_ROOT))
 
 from core.classifier import PrototypeClassifier
-from core.config import AppConfig, dataset_db_path
+from core.config import AppConfig, config_from_env, dataset_db_path
 from core.dataset import add_image, connect, init_db, set_label
 from core.embedding import build_extractor
 from core.embedding_cache import get_or_compute_embedding
@@ -61,7 +61,7 @@ def iter_csv_refs(csv_path: Path) -> Iterable[tuple[str, str]]:
 
 
 def import_extras(extra_dir: Path, *, config: Optional[AppConfig] = None) -> ImportReport:
-    cfg = config or AppConfig()
+    cfg = config or config_from_env()
 
     images_root = extra_dir / "imagens"
     csv_refs = extra_dir / "enderecos.csv"
