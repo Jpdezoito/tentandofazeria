@@ -1,6 +1,7 @@
 @echo off
 REM Launcher para ianova - Hub de IAs Locais
 REM Este script inicia o aplicativo ianova no Windows
+REM Nota: Acentos removidos para compatibilidade com diferentes encodings do Windows
 
 echo ========================================
 echo  ianova - Hub de IAs Locais

@@ -38,7 +38,7 @@ except ImportError:
 
 try:
     import vosk
-    VOSK_AVAILABLE = False  # Opcional, não será obrigatório
+    VOSK_AVAILABLE = True  # Opcional, não é obrigatório
 except ImportError:
     VOSK_AVAILABLE = False
 
