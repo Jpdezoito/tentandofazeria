@@ -4,6 +4,13 @@ from dataclasses import dataclass
 from pathlib import Path
 
 
+def _env_flag(name: str) -> bool:
+    import os
+
+    v = str(os.environ.get(name, "")).strip().lower()
+    return v in {"1", "true", "yes", "y", "on"}
+
+
 @dataclass(frozen=True)
 class AppConfig:
     """Configuration for the open-world image learner."""
@@ -36,6 +43,23 @@ class AppConfig:
 
     # Clustering (unknowns)
     unknown_cluster_similarity: float = 0.55
+
+
+def config_from_env() -> AppConfig:
+    """Build config with safe defaults when debugging.
+
+    Set IANOVA_SAFE_DEBUG=1 to avoid heavy TensorFlow loads by default.
+    """
+
+    if not _env_flag("IANOVA_SAFE_DEBUG"):
+        return AppConfig()
+
+    return AppConfig(
+        backbone="simple_histogram",
+        image_size=160,
+        embedding_dim_hint=96,
+        replay_per_class=12,
+    )
 
 
 def project_root() -> Path:

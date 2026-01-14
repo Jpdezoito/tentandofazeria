@@ -8,7 +8,7 @@ from pathlib import Path
 import numpy as np
 
 from rna_de_video.core.classifier import PrototypeClassifier
-from rna_de_video.core.config import AppConfig, model_dir, thresholds_path
+from rna_de_video.core.config import AppConfig, config_from_env, model_dir, thresholds_path
 from rna_de_video.core.embedding import build_extractor
 from rna_de_video.core.embedding_cache import get_or_compute_video_embedding
 from rna_de_video.core.thresholds import Thresholds, load_thresholds
@@ -55,7 +55,21 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--end", type=float, default=None, help="Fim do trecho em segundos")
     args = ap.parse_args(argv)
 
-    config = AppConfig()
+    def emit_ok(payload: dict) -> None:
+        out = {"ok": True, "tool": "video", "version": 1}
+        out.update(payload)
+        sys.stdout.write(json.dumps(out, ensure_ascii=False))
+
+    def emit_error(message: str) -> None:
+        out = {
+            "ok": False,
+            "tool": "video",
+            "version": 1,
+            "error": {"message": str(message)},
+        }
+        sys.stdout.write(json.dumps(out, ensure_ascii=False))
+
+    config = config_from_env()
 
     try:
         ref = str(args.video)
@@ -123,31 +137,30 @@ def main(argv: list[str] | None = None) -> int:
             k=5,
         )
 
-        out = {
-            "known": bool(pred.known),
-            "reason": str(pred.reason),
-            "mode": mode_id,
-            "segment": {
-                "start_s": None if start_ms < 0 else (start_ms / 1000.0),
-                "end_s": None if end_ms < 0 else (end_ms / 1000.0),
-            },
-            "model_path": str(model_path),
-            "topk": [
-                {
-                    "label": p.label,
-                    "confidence": float(p.confidence),
-                    "similarity": float(p.similarity),
-                }
-                for p in pred.topk
-            ],
-        }
-
-        sys.stdout.write(json.dumps(out, ensure_ascii=False))
+        emit_ok(
+            {
+                "known": bool(pred.known),
+                "reason": str(pred.reason),
+                "mode": mode_id,
+                "segment": {
+                    "start_s": None if start_ms < 0 else (start_ms / 1000.0),
+                    "end_s": None if end_ms < 0 else (end_ms / 1000.0),
+                },
+                "model_path": str(model_path),
+                "topk": [
+                    {
+                        "label": p.label,
+                        "confidence": float(p.confidence),
+                        "similarity": float(p.similarity),
+                    }
+                    for p in pred.topk
+                ],
+            }
+        )
         return 0
 
     except Exception as e:
-        # Write a compact error to stderr so caller sees it.
-        sys.stderr.write(str(e))
+        emit_error(str(e))
         return 2
 
 

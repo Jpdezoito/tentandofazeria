@@ -14,7 +14,7 @@ _ROOT = _THIS.parents[1]
 if str(_ROOT) not in sys.path:
     sys.path.insert(0, str(_ROOT))
 
-from core.config import AppConfig, db_path  # noqa: E402
+from core.config import config_from_env, db_path  # noqa: E402
 from core.memoria.store import connect, init_db  # noqa: E402
 from core.runtime.orchestrator import ChatRuntime  # noqa: E402
 from core.audio.stt_vosk import transcribe_wav_vosk  # noqa: E402
@@ -55,7 +55,24 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--model", default=None)
     args = ap.parse_args(argv)
 
-    cfg = AppConfig()
+    def emit_ok(payload: dict) -> None:
+        out = {"ok": True, "tool": "conversa", "version": 1}
+        out.update(payload)
+        print(json.dumps(out, ensure_ascii=False))
+
+    def emit_error(message: str, *, debug: str = "") -> None:
+        out = {
+            "ok": False,
+            "tool": "conversa",
+            "version": 1,
+            "error": {"message": str(message)},
+            "text": "",
+            "engine": "",
+            "debug": debug,
+        }
+        print(json.dumps(out, ensure_ascii=False))
+
+    cfg = config_from_env()
 
     conn = connect(db_path(cfg))
     init_db(conn)
@@ -81,17 +98,18 @@ def main(argv: list[str] | None = None) -> int:
             user_text = (tr.text or "").strip()
             debug = "stt=vosk"
             if not user_text:
-                out = {"text": "(transcrição vazia)", "engine": "fallback", "debug": debug}
-                print(json.dumps(out, ensure_ascii=False))
+                emit_ok({"text": "(transcrição vazia)", "engine": "fallback", "debug": debug})
                 return 0
 
         use_ollama = bool(args.use_ollama)
         model = (args.model or "").strip() or None
 
         res = runtime.reply(user_text, use_ollama=use_ollama, model=model)
-        out = {"text": res.text, "engine": res.engine, "debug": (debug + " " + res.debug).strip()}
-        print(json.dumps(out, ensure_ascii=False))
+        emit_ok({"text": res.text, "engine": res.engine, "debug": (debug + " " + res.debug).strip()})
         return 0
+    except Exception as e:
+        emit_error(str(e))
+        return 2
     finally:
         try:
             conn.close()

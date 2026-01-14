@@ -3,7 +3,7 @@ from __future__ import annotations
 from pathlib import Path
 
 from core.classifier import PrototypeClassifier
-from core.config import AppConfig, dataset_db_path, thresholds_path
+from core.config import config_from_env, dataset_db_path, thresholds_path
 from core.dataset import add_image, connect, init_db, set_label
 from core.embedding import build_extractor
 from core.embedding_cache import get_or_compute_embedding, load_embedding
@@ -12,7 +12,7 @@ from core.trainer import Trainer
 
 
 def main() -> None:
-    config = AppConfig()
+    config = config_from_env()
 
     image_path = Path(__file__).resolve().parents[1] / "treinos" / "sample_images" / "maca.png"
     if not image_path.exists():

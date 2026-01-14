@@ -6,6 +6,13 @@ from pathlib import Path
 from typing import Any
 
 
+def _env_flag(name: str) -> bool:
+    import os
+
+    v = str(os.environ.get(name, "")).strip().lower()
+    return v in {"1", "true", "yes", "y", "on"}
+
+
 @dataclass(frozen=True)
 class AppConfig:
     app_name: str = "RNA_Conversa"
@@ -28,6 +35,19 @@ class AppConfig:
     # Ollama
     ollama_base_url: str = "http://localhost:11434"
     ollama_timeout_s: float = 30.0
+
+
+def config_from_env() -> AppConfig:
+    """Build config with safe defaults when debugging."""
+
+    if not _env_flag("IANOVA_SAFE_DEBUG"):
+        return AppConfig()
+
+    return AppConfig(
+        session_max_turns=6,
+        retrieval_topk=2,
+        ollama_timeout_s=10.0,
+    )
 
 
 def project_root() -> Path:

@@ -120,8 +120,12 @@ def build_extractor(backbone: str, image_size: int) -> EmbeddingExtractor:
     Prefers Keras ResNet50 if TensorFlow is available; otherwise fallback.
     """
 
+    b = (backbone or "").lower().strip()
+    if b in {"fallback", "hist", "fallback_hist", "simple_histogram"}:
+        return SimpleHistogramExtractor(image_size=image_size)
+
     try:
-        if backbone.lower() in {"resnet50", "resnet"}:
+        if b in {"resnet50", "resnet"}:
             return KerasResNet50Extractor(image_size=image_size)
         # EfficientNet could be added similarly; keep ResNet50 as the main path.
         return KerasResNet50Extractor(image_size=image_size)

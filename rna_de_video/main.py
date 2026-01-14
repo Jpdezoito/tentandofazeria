@@ -11,11 +11,11 @@ if str(_PKG_PARENT) not in sys.path:
     sys.path.insert(0, str(_PKG_PARENT))
 
 from rna_de_video.app.gui import RnaVideoApp
-from rna_de_video.core.config import AppConfig
+from rna_de_video.core.config import config_from_env
 
 
 def main() -> None:
-    cfg = AppConfig()
+    cfg = config_from_env()
     app = RnaVideoApp(cfg)
     app.title("RNA - Vídeo")
     app.minsize(1200, 760)
