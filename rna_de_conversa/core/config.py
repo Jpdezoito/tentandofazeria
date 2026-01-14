@@ -1,0 +1,133 @@
+from __future__ import annotations
+
+import json
+from dataclasses import dataclass
+from pathlib import Path
+from typing import Any
+
+
+@dataclass(frozen=True)
+class AppConfig:
+    app_name: str = "RNA_Conversa"
+
+    # Folder policy: everything under treinos/
+    project_folder_name: str = "rna_de_conversa"
+    treinos_dir_name: str = "treinos"
+
+    db_name: str = "conversa.db"
+    settings_name: str = "settings.json"
+
+    logs_dir_name: str = "logs"
+    import_dir_name: str = "importar"
+
+    # Conversation behavior
+    session_max_turns: int = 12
+    retrieval_topk: int = 3
+    retrieval_min_score: float = 0.18
+
+    # Ollama
+    ollama_base_url: str = "http://localhost:11434"
+    ollama_timeout_s: float = 30.0
+
+
+def project_root() -> Path:
+    # Directory containing this module (rna_de_conversa/core)
+    return Path(__file__).resolve().parents[1]
+
+
+def assistant_base_dir(config: AppConfig) -> Path:
+    root = project_root()
+    if root.name.lower() == config.project_folder_name.lower():
+        return root
+
+    candidate = root / config.project_folder_name
+    candidate.mkdir(parents=True, exist_ok=True)
+    return candidate
+
+
+def treinos_dir(config: AppConfig) -> Path:
+    d = assistant_base_dir(config) / config.treinos_dir_name
+    d.mkdir(parents=True, exist_ok=True)
+    return d
+
+
+def modelo_treino_dir(config: AppConfig) -> Path:
+    d = treinos_dir(config) / "modelo_treino"
+    d.mkdir(parents=True, exist_ok=True)
+    return d
+
+
+def modelos_pre_treinados_dir(config: AppConfig) -> Path:
+    d = modelo_treino_dir(config) / "modelos_pre_treinados"
+    d.mkdir(parents=True, exist_ok=True)
+    return d
+
+
+def active_pretrained_root(config: AppConfig) -> Path | None:
+    """Return the active pretrained bundle folder if configured.
+
+    Rules (first match wins):
+    - treinos/modelo_treino/modelos_pre_treinados/ATIVO.txt containing a relative folder name
+    - treinos/modelo_treino/modelos_pre_treinados/ativo (directory)
+
+    The active folder can contain files like conversa.db, settings.json, etc.
+    """
+
+    base = modelos_pre_treinados_dir(config)
+    marker = base / "ATIVO.txt"
+    if marker.exists():
+        rel = marker.read_text(encoding="utf-8", errors="replace").strip()
+        if rel:
+            candidate = (base / rel).resolve()
+            if candidate.exists() and candidate.is_dir():
+                return candidate
+
+    candidate = base / "ativo"
+    if candidate.exists() and candidate.is_dir():
+        return candidate
+
+    return None
+
+
+def _prefer_pretrained_file(config: AppConfig, filename: str) -> Path | None:
+    active = active_pretrained_root(config)
+    if not active:
+        return None
+    p = active / filename
+    return p if p.exists() and p.is_file() else None
+
+
+def db_path(config: AppConfig) -> Path:
+    return _prefer_pretrained_file(config, config.db_name) or (treinos_dir(config) / config.db_name)
+
+
+def settings_path(config: AppConfig) -> Path:
+    # Keep settings local by default (user preferences), unless a pretrained settings file exists.
+    return _prefer_pretrained_file(config, config.settings_name) or (treinos_dir(config) / config.settings_name)
+
+
+def logs_dir(config: AppConfig) -> Path:
+    d = treinos_dir(config) / config.logs_dir_name
+    d.mkdir(parents=True, exist_ok=True)
+    return d
+
+
+def import_dir(config: AppConfig) -> Path:
+    d = treinos_dir(config) / config.import_dir_name
+    d.mkdir(parents=True, exist_ok=True)
+    return d
+
+
+def load_settings(config: AppConfig) -> dict[str, Any]:
+    p = settings_path(config)
+    if not p.exists():
+        return {}
+    try:
+        return json.loads(p.read_text(encoding="utf-8", errors="replace"))
+    except Exception:
+        return {}
+
+
+def save_settings(config: AppConfig, data: dict[str, Any]) -> None:
+    p = settings_path(config)
+    p.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")

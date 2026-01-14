@@ -1,0 +1,5 @@
+{
+  "use_ollama": true,
+  "ollama_model": "gemma3:4b",
+  "audio_seconds": 4.0
+}

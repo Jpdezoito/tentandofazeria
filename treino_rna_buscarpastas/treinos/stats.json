@@ -1,0 +1,16 @@
+{
+  "preferences": {
+    "chrome": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
+    "league of legends": "C:\\Users\\Public\\Desktop\\League of Legends.lnk"
+  },
+  "usage": {
+    "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe": {
+      "count": 1,
+      "last_opened": "2026-01-13T01:14:53+00:00"
+    },
+    "C:\\Users\\Public\\Desktop\\League of Legends.lnk": {
+      "count": 1,
+      "last_opened": "2026-01-13T01:15:23+00:00"
+    }
+  }
+}

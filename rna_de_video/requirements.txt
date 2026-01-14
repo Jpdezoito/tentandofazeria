@@ -1,0 +1,20 @@
+numpy>=1.26
+pillow>=10.0
+
+# Video decoding
+# - OpenCV is faster when available, but dependency constraints on very new Pythons can be painful.
+# - imageio+ffmpeg works well on Windows/Python 3.14.
+opencv-python>=4.8; python_version < "3.14"
+imageio>=2.34
+imageio-ffmpeg>=0.5
+
+# Optional for YouTube / non-direct URL downloads
+yt-dlp>=2024.7.0
+
+# Optional for better embeddings
+# TensorFlow doesn't ship native Windows wheels anymore on PyPI,
+# so keep it optional and only install on supported platforms.
+tensorflow>=2.15; platform_system != "Windows" and python_version < "3.13"
+
+# Dev
+pytest>=8.0

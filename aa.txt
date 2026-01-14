@@ -1,0 +1,120 @@
+Você é um engenheiro sênior em IA/NLP e Python 3.14 no Windows 10/11. 
+Quero que você crie um novo módulo/projeto chamado: rna_de_conversa
+e também INTEGRE esse módulo no meu main principal (arquivo main_ia.py).
+
+CONTEXTO DO MEU WORKSPACE (NÃO MUDAR NOMES EXISTENTES):
+- Já existem pastas: 
+  - treino_rna_buscarpastas
+  - treino_rna_qualquer_imagem
+  - ia_treinos
+- Existe um arquivo principal: main_ia.py (main do “hub”)
+- Eu quero adicionar a “RNA de conversa” como mais um componente dentro desse hub.
+
+OBJETIVO (RNA DE CONVERSA COMPLETA):
+Criar um sistema de conversa que:
+1) Tenha modo “conversa” com memória curta (contexto da sessão)
+2) Tenha modo “treino incremental” (aprendizado local a partir de textos/diálogos)
+3) Salve e carregue automaticamente os “treinos”/dados
+4) Tenha uma interface gráfica (Tkinter) para conversar e ver logs do que está acontecendo
+5) Tenha opção de usar modelos LOCAIS do OLLAMA para responder (se possível), e fallback para o modo local simples caso não exista Ollama.
+
+IMPORTANTE SOBRE OLLAMA (OBRIGATÓRIO):
+- “Treinar modelo do Ollama” nem sempre é viável diretamente; então o sistema deve:
+  A) Detectar se o Ollama está instalado e rodando localmente
+  B) Listar os modelos disponíveis no Ollama (ex.: via comando “ollama list” OU via API local do Ollama)
+  C) Permitir selecionar um modelo (ex.: llama3, mistral, etc.) para gerar respostas
+  D) Enviar prompt/contexto para o Ollama e receber resposta
+  E) Se o Ollama não estiver disponível, usar fallback local:
+     - um chatbot simples baseado em retrieval (busca em base de conhecimento local) + respostas template
+     - ou um modelo menor local (se existir), mas NÃO depender da internet
+
+ARQUITETURA DO SISTEMA (PROFISSIONAL):
+1) Estrutura de pastas (criar dentro do meu workspace):
+rna_de_conversa/
+ ├─ app/                      (GUI Tkinter)
+ ├─ core/
+ │   ├─ nlp/                   (normalização, intents simples, utilitários)
+ │   ├─ memoria/               (memória curta e longa)
+ │   ├─ treino/                (pipeline de treino incremental)
+ │   ├─ retrieval/             (busca em base local)
+ │   ├─ ollama/                (integração com Ollama: detectar, listar modelos, gerar)
+ │   └─ runtime/               (orquestração: decidir se usa Ollama ou fallback)
+ ├─ treinos/                   (NÃO salvar fora daqui)
+ ├─ main.py                    (entrada do módulo rna_de_conversa)
+ ├─ requirements.txt
+ └─ README.md
+
+2) Persistência (OBRIGATÓRIO):
+Salvar tudo em:
+rna_de_conversa/treinos/
+incluindo:
+- conversas/ (histórico por data)
+- memoria_longa.json (ou sqlite.db)
+- base_conhecimento/ (arquivos indexados)
+- configs.json (modelo escolhido, preferências)
+- logs/
+
+3) Modos de funcionamento (OBRIGATÓRIO):
+A) Modo Conversa (UI):
+- Campo para o usuário digitar
+- Botão enviar
+- Área de chat (histórico da sessão)
+- Painel “Logs ao vivo”
+- Toggle: “Usar Ollama (se disponível)”
+- Dropdown: “Modelo Ollama” (carrega lista ao abrir)
+- Botão: “Recarregar modelos”
+- Botão: “Limpar memória da sessão”
+- Botão: “Salvar conversa”
+- Botão: “Treinar com conversa / Treinar com arquivos”
+
+B) Modo Treino Incremental:
+- O usuário pode:
+  - adicionar arquivos TXT/PDF contendo diálogos/perguntas-respostas
+  - colar um dataset de conversa (pares pergunta->resposta) na interface
+- O sistema deve:
+  - extrair texto
+  - segmentar em exemplos (Q/A ou turnos)
+  - salvar como dataset local em treinos/
+  - atualizar um índice de retrieval (ex.: TF-IDF + cosine) para responder via busca local
+  - registrar métricas simples (tamanho da base, top termos, etc.)
+
+4) Motor de resposta (OBRIGATÓRIO):
+- Se Ollama estiver ON e disponível:
+  - usar o Ollama para gerar resposta com contexto da sessão e com “trechos relevantes” vindos do retrieval
+  - (RAG local: buscar top-k trechos e anexar ao prompt)
+- Se Ollama estiver OFF ou indisponível:
+  - responder com base em retrieval:
+    - buscar top-k respostas/trechos do dataset
+    - retornar a melhor resposta e mostrar fonte/score (opcional)
+- Sempre mostrar nos logs:
+  - “Ollama ativo/inativo”
+  - modelo escolhido
+  - quantos trechos foram recuperados
+  - tempo de resposta
+
+5) Integração no main principal (OBRIGATÓRIO):
+- Modificar main_ia.py para incluir um “menu/hub” (sem quebrar o que já existe):
+  - Botão/Opção: “RNA Buscar Pastas” (já existente)
+  - Botão/Opção: “RNA Qualquer Imagem” (já existente)
+  - Botão/Opção NOVA: “RNA de Conversa”
+- Ao clicar “RNA de Conversa”, abrir a janela do rna_de_conversa (rodar rna_de_conversa/main.py ou chamar a função principal do módulo)
+- NÃO duplicar código; usar import e uma função start() padrão.
+
+PADRÕES DE QUALIDADE:
+- Python 3.14, tipagem, docstrings, tratamento de exceções
+- Não travar GUI: threads/queue para operações pesadas (carregar arquivos, indexar, chamar Ollama)
+- Código modular e limpo
+- README explicando:
+  - como rodar o hub main_ia.py
+  - como rodar rna_de_conversa sozinho
+  - como configurar/usar Ollama
+  - como adicionar dados para treino
+  - onde ficam os treinos
+
+ENTREGÁVEL:
+- Todos os arquivos do projeto rna_de_conversa com conteúdo completo
+- main_ia.py atualizado com integração
+- requirements.txt atualizado se necessário, sem dependências inúteis
+
+AGORA:
+Gere o projeto completo rna_de_conversa + atualize o main_ia.py para integrar o novo módulo no hub, mantendo compatibilidade com o restante do workspace.

@@ -1,0 +1,45 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+
+# VS Code
+.vscode/
+
+# Virtual envs
+.venv/
+.venv*/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Local runtime data / caches
+*.db
+*.sqlite
+*.sqlite3
+*.npy
+*.npz
+*.log
+
+# Training/runtime folders (keep templates/settings)
+**/treinos/**
+!**/treinos/settings.json
+!**/treinos/aliases.json
+!**/treinos/stats.json
+!**/treinos/thresholds.json
+!**/treinos/importar/**
+!**/treinos/modelo_treino/**
+!**/treinos/sample_images/**
+
+# Model outputs / caches / logs
+**/treinos/**/cache/
+**/treinos/**/logs/
+**/treinos/**/model/
+**/treinos/**/embeddings_cache/
+**/treinos/**/imported_images/
+**/treinos/**/imported_videos/
+
+# Other caches
+**/.cache/
