@@ -1,0 +1,18 @@
+# ianova - Hub de IAs Locais
+# Dependências para Python 3.8+
+
+# Chat com Ollama
+requests>=2.31.0
+
+# Processamento de imagens
+Pillow>=10.0.0
+
+# Processamento de vídeo e classificação
+opencv-python>=4.8.0
+numpy>=1.24.0
+
+# Reconhecimento de voz (opcional)
+# vosk>=0.3.45
+
+# GUI já incluída no Python padrão
+# tkinter (incluído no Python)
