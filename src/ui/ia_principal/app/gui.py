@@ -20,12 +20,47 @@ import subprocess
 import customtkinter as ctk
 from PIL import Image, ImageTk
 
-from ia_principal.core.clients import BuscarPastasClient, RnaConversaClient, RnaVideoClient, RnaCodigoClient, SubprocessResult
-from ia_principal.core.router import decide_route
-from ui_components import (
+from src.ui.ia_principal.core.clients import BuscarPastasClient, RnaConversaClient, RnaVideoClient, RnaCodigoClient, SubprocessResult
+from src.ui.ia_principal.core.router import decide_route
+from src.core.ui_components import (
     ChatBubble, ChatBubbleWithAttachment, AttachmentPreview, VoiceRecorder, AttachmentMenu, SettingsMenu
 )
-from media_utils import open_file, create_image_thumbnail, ImageViewer, VideoViewer, play_audio, get_video_metadata, create_video_thumbnail
+# Media utils removed in simplification - basic implementations below
+
+def open_file(path):
+    """Basic file opener using system default"""
+    import os
+    try:
+        os.startfile(path)
+        return True
+    except:
+        return False
+
+def create_image_thumbnail(path, size=(100, 100)):
+    """Basic image thumbnail - returns None for now"""
+    return None
+
+def create_video_thumbnail(path, size=(100, 100)):
+    """Basic video thumbnail - returns None for now"""
+    return None
+
+def get_video_metadata(path):
+    """Basic video metadata - returns empty dict for now"""
+    return {}
+
+def play_audio(path):
+    """Basic audio player - returns False for now"""
+    return False
+
+class ImageViewer:
+    """Basic image viewer placeholder"""
+    def __init__(self, parent, path):
+        pass
+
+class VideoViewer:
+    """Basic video viewer placeholder"""
+    def __init__(self, parent, path, vlc_instance=None):
+        pass
 
 logger = logging.getLogger(__name__)
 

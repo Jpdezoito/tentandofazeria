@@ -84,7 +84,7 @@ def train_cycle(rna, dados, epochs=1):
     print(f"Iniciando treino com {epochs} epochs...")
     start_time = time.time()
     from torch.utils.data import DataLoader
-    from rna import ConversaDataset
+    from src.core.rna import ConversaDataset
     dataset = ConversaDataset(dados, rna.tokenizer)
     dataloader = DataLoader(dataset, batch_size=2, shuffle=True)
     num_batches = len(dataloader)
