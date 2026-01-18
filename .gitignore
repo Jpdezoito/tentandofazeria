@@ -24,12 +24,19 @@ Thumbs.db
 *.wav
 *.mp4
 *.mp3
+*.avi
+*.mkv
 
 # Database files
 *.db
 *.db-*
 *.sqlite
 *.sqlite3
+index.db
+
+# Video files in treinos
+**/treinos/**/imported_videos/**
+**/treinos/**/youtube/**
 
 # Training/runtime folders (keep templates/settings)
 **/treinos/**
