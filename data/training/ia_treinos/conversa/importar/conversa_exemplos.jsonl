@@ -1,5 +1,0 @@
-{"user_text": "ol\u00e1", "assistant_text": "Ol\u00e1! Como posso ajudar hoje?"}
-{"user_text": "como voc\u00ea est\u00e1", "assistant_text": "Estou bem, obrigado por perguntar! E voc\u00ea?"}
-{"user_text": "o que \u00e9 programa\u00e7\u00e3o", "assistant_text": "Programa\u00e7\u00e3o \u00e9 o processo de criar instru\u00e7\u00f5es para computadores executarem tarefas. Inclui linguagens como Python, JavaScript, etc."}
-{"user_text": "explique fibonacci", "assistant_text": "Fibonacci \u00e9 uma sequ\u00eancia matem\u00e1tica onde cada n\u00famero \u00e9 a soma dos dois anteriores: 0, 1, 1, 2, 3, 5, 8, 13..."}
-{"user_text": "gere um c\u00f3digo simples", "assistant_text": "Claro! Aqui vai um exemplo simples em Python:\n\n```python\ndef hello():\n    print('Ol\u00e1, mundo!')\n\nhello()\n```"}

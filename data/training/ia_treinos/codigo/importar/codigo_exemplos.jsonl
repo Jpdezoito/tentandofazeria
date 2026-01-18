@@ -1,5 +1,0 @@
-{"user": "escreva uma função para calcular fibonacci", "assistant": "def fibonacci(n):\n    if n <= 1:\n        return n\n    else:\n        return fibonacci(n-1) + fibonacci(n-2)"}
-{"user": "crie um código python para somar dois números", "assistant": "def soma(a, b):\n    return a + b\n\n# Exemplo de uso\nresultado = soma(5, 3)\nprint(resultado)  # Saída: 8"}
-{"user": "faça uma função que verifica se um número é primo", "assistant": "def eh_primo(n):\n    if n <= 1:\n        return False\n    for i in range(2, int(n**0.5) + 1):\n        if n % i == 0:\n            return False\n    return True"}
-{"user": "gere código para ordenar uma lista em python", "assistant": "def ordenar_lista(lista):\n    return sorted(lista)\n\n# Exemplo\nnumeros = [3, 1, 4, 1, 5]\nprint(ordenar_lista(numeros))  # [1, 1, 3, 4, 5]"}
-{"user": "escreva um programa que calcula fatorial", "assistant": "def fatorial(n):\n    if n == 0 or n == 1:\n        return 1\n    else:\n        return n * fatorial(n-1)\n\n# Teste\nprint(fatorial(5))  # 120"}

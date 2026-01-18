@@ -62,16 +62,10 @@
             <strong>🧠 Modelo de Linguagem GPT-2:</strong> Baseado no GPT-2 com fine-tuning personalizado para conversação em português.
         </div>
         <div class="feature">
-            <strong>🔄 Treinamento Flexível:</strong> Suporte a múltiplos otimizadores (Adam, AdamW, SGD, RMSprop, etc.) e schedulers de learning rate.
+            <strong>🔄 Treinamento Flexível:</strong> Suporte a múltiplos otimizadores e schedulers de learning rate.
         </div>
         <div class="feature">
             <strong>💬 Interface Gráfica:</strong> GUI moderna desenvolvida com CustomTkinter para interação fácil.
-        </div>
-        <div class="feature">
-            <strong>🔗 Integração com Ollama:</strong> Suporte a modelos locais via Ollama com fallback automático.
-        </div>
-        <div class="feature">
-            <strong>📚 Sistema RAG:</strong> Retrieval-Augmented Generation para respostas baseadas em conhecimento personalizado.
         </div>
         <div class="feature">
             <strong>🎯 Avaliação Automática:</strong> Sistema de avaliação de coerência e qualidade das respostas.
@@ -98,13 +92,10 @@
 
         <h2>📁 Estrutura do Projeto</h2>
         <ul>
-            <li><strong>src/core/:</strong> Componentes principais (RNA, avaliador, UI components)</li>
-            <li><strong>src/ui/:</strong> Interfaces gráficas (GUI principal)</li>
-            <li><strong>src/backend/:</strong> Módulos backend especializados</li>
-            <li><strong>src/tools/:</strong> Ferramentas e utilitários</li>
+            <li><strong>src/core/:</strong> Lógica principal (RNA, avaliação, componentes UI)</li>
+            <li><strong>src/ui/:</strong> Interface gráfica principal</li>
             <li><strong>src/config/:</strong> Configurações centralizadas</li>
-            <li><strong>data/:</strong> Dados organizados (raw, training, models)</li>
-            <li><strong>docs/:</strong> Documentação do projeto</li>
+            <li><strong>data/:</strong> Dados e modelos (raw data + trained models)</li>
         </ul>
 
         <h2>🔧 Tecnologias Utilizadas</h2>
@@ -113,7 +104,6 @@
             <li><strong>Transformers:</strong> Biblioteca Hugging Face para modelos de linguagem</li>
             <li><strong>PEFT:</strong> Parameter-Efficient Fine-Tuning (LoRA)</li>
             <li><strong>CustomTkinter:</strong> Interface gráfica moderna</li>
-            <li><strong>Ollama:</strong> Integração com modelos locais</li>
             <li><strong>Scikit-learn:</strong> Avaliação e métricas</li>
         </ul>
 
