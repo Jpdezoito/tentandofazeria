@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  ia-conversa:
+    build: .
+    container_name: ia-conversa-app
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./dados:/app/dados
+      - ./modelos:/app/modelos
+      - ./logs:/app/logs
+    environment:
+      - PYTHONPATH=/app
+      - OLLAMA_HOST=http://ollama:11434
+    depends_on:
+      - ollama
+    networks:
+      - ia-network
+    restart: unless-stopped
+
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ia-conversa-ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    networks:
+      - ia-network
+    restart: unless-stopped
+
+volumes:
+  ollama_data:
+    driver: local
+
+networks:
+  ia-network:
+    driver: bridge

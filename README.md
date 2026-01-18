@@ -2,6 +2,48 @@
 
 Arquitetura organizada para IA local com CLI unica, RAG e modulos separados.
 
+## 🚀 Execução com Docker (Recomendado)
+
+### Pré-requisitos
+- Docker e Docker Compose instalados
+
+### Início Rápido
+```bash
+# Construir e iniciar serviços
+docker-compose up --build
+
+# Ou usar o script helper (Windows)
+docker-run.bat up
+```
+
+### Comandos Docker
+```bash
+# Construir imagem
+docker-compose build
+
+# Iniciar serviços
+docker-compose up -d
+
+# Ver logs
+docker-compose logs -f
+
+# Acessar shell no container
+docker-compose exec ia-conversa bash
+
+# Parar serviços
+docker-compose down
+```
+
+### Serviços
+- **ia-conversa**: Aplicação principal da IA
+- **ollama**: Serviço de modelos de linguagem locais
+
+## 📦 Instalação Tradicional
+
+### Pré-requisitos
+- Python 3.10+
+- Git
+
 ## Estrutura sugerida
 
 - `ia_core/` utilitarios comuns (config, eval, registry)
