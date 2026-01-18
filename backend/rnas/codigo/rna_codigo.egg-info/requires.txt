@@ -1,0 +1,16 @@
+torch>=2.0.0
+transformers>=4.30.0
+datasets>=2.10.0
+accelerate>=0.20.0
+tokenizers>=0.13.0
+numpy
+pandas
+scikit-learn
+wandb
+python-dotenv
+
+[dev]
+pytest
+black
+isort
+flake8
