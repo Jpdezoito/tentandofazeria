@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IA Conversacional - Chat Demo</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .chat-container {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            height: 500px;
+            display: flex;
+            flex-direction: column;
+        }
+        .chat-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            border-bottom: 1px solid #eee;
+        }
+        .message {
+            margin-bottom: 15px;
+            padding: 10px;
+            border-radius: 8px;
+            max-width: 70%;
+        }
+        .message.user {
+            background-color: #007bff;
+            color: white;
+            margin-left: auto;
+            text-align: right;
+        }
+        .message.bot {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+        }
+        .chat-input {
+            display: flex;
+            padding: 20px;
+            gap: 10px;
+        }
+        input[type="text"] {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .header {
+            text-align: center;
+            padding: 20px;
+            background-color: #4CAF50;
+            color: white;
+            border-radius: 8px 8px 0 0;
+        }
+        .typing {
+            display: none;
+            font-style: italic;
+            color: #666;
+        }
+        .back-link {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .back-link a {
+            color: #4CAF50;
+            text-decoration: none;
+        }
+        .back-link a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🤖 IA Conversacional - Demo Interativa</h1>
+        <p>Experimente uma conversa com nossa IA (simulada)</p>
+    </div>
+
+    <div class="chat-container">
+        <div class="chat-messages" id="chatMessages">
+            <div class="message bot">
+                <strong>IA:</strong> Olá! Sou uma IA conversacional desenvolvida com RNA. Como posso ajudar você hoje?
+            </div>
+        </div>
+        <div class="typing" id="typing">IA está digitando...</div>
+        <div class="chat-input">
+            <input type="text" id="messageInput" placeholder="Digite sua mensagem..." onkeypress="handleKeyPress(event)">
+            <button onclick="sendMessage()">Enviar</button>
+        </div>
+    </div>
+
+    <div class="back-link">
+        <a href="index.html">← Voltar para a página principal</a>
+    </div>
+
+    <script>
+        const chatMessages = document.getElementById('chatMessages');
+        const messageInput = document.getElementById('messageInput');
+        const typingIndicator = document.getElementById('typing');
+
+        // Respostas simuladas da IA
+        const responses = {
+            "oi": "Olá! Como vai?",
+            "ola": "Oi! Tudo bem com você?",
+            "tudo bem": "Estou ótimo, obrigado por perguntar! E você?",
+            "como vai": "Vou muito bem, obrigado! E você?",
+            "qual seu nome": "Meu nome é IA Conversacional, desenvolvido com RNA usando PyTorch!",
+            "o que voce faz": "Eu sou um sistema de IA para conversação natural, capaz de aprender e gerar respostas contextuais.",
+            "python": "Python é uma linguagem incrível! Uso ela para implementar meus algoritmos de aprendizado de máquina.",
+            "ia": "IA significa Inteligência Artificial. Sou um exemplo de como as máquinas podem aprender e conversar como humanos.",
+            "aprendizado": "Uso técnicas de aprendizado profundo, como redes neurais recorrentes e transformers para processar linguagem natural.",
+            "default": "Interessante! Conte-me mais sobre isso. Sou uma IA em desenvolvimento e estou aprendendo a conversar melhor a cada dia."
+        };
+
+        function sendMessage() {
+            const message = messageInput.value.trim();
+            if (message === '') return;
+
+            // Adicionar mensagem do usuário
+            addMessage(message, 'user');
+            messageInput.value = '';
+
+            // Mostrar indicador de digitação
+            typingIndicator.style.display = 'block';
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+
+            // Simular delay da IA
+            setTimeout(() => {
+                typingIndicator.style.display = 'none';
+                const response = generateResponse(message.toLowerCase());
+                addMessage(response, 'bot');
+            }, 1000 + Math.random() * 2000); // Delay aleatório entre 1-3 segundos
+        }
+
+        function addMessage(text, sender) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${sender}`;
+            messageDiv.innerHTML = `<strong>${sender === 'user' ? 'Você:' : 'IA:'}</strong> ${text}`;
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function generateResponse(message) {
+            // Procurar por palavras-chave nas respostas
+            for (const [key, response] of Object.entries(responses)) {
+                if (message.includes(key)) {
+                    return response;
+                }
+            }
+            return responses.default;
+        }
+
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        }
+
+        // Focar no input ao carregar
+        window.onload = function() {
+            messageInput.focus();
+        };
+    </script>
+</body>
+</html></content>
+<parameter name="filePath">c:\Users\José Paulo Siqueira\Documents\VEGAS\Nova pasta\ianova\main.html
