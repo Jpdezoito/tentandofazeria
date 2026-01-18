@@ -2,7 +2,29 @@
 
 Arquitetura organizada para IA local com CLI unica, RAG e modulos separados.
 
-## 🚀 Execução com Docker (Recomendado)
+## � Estrutura do Projeto
+
+```
+ianova/
+├── src/                    # Código fonte principal
+│   ├── core/              # Componentes core (RNA, avaliador, etc.)
+│   ├── ui/                # Interfaces gráficas
+│   ├── tools/             # Ferramentas e scripts
+│   ├── config/            # Configurações
+│   └── backend/           # Módulos backend
+├── data/                  # Dados e modelos
+│   ├── raw/               # Dados brutos
+│   ├── training/          # Dados de treinamento
+│   └── models/            # Modelos treinados
+├── docs/                  # Documentação
+├── main.py                # Ponto de entrada principal
+├── requirements.txt       # Dependências Python
+├── Dockerfile             # Configuração Docker
+├── docker-compose.yml     # Orquestração de serviços
+└── README.md
+```
+
+## �🚀 Execução com Docker (Recomendado)
 
 ### Pré-requisitos
 - Docker e Docker Compose instalados

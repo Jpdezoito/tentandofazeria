@@ -52,6 +52,15 @@ temp_*
 *.tmp
 output.txt
 
+# Old structure (now moved)
+dados/
+ia_principal/
+ia_treinos/
+modelo_rna/
+rna_de_conversa/
+tools/
+backend/
+
 # Node modules (if any)
 node_modules/
 

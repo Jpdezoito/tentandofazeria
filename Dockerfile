@@ -30,13 +30,15 @@ RUN pip install --no-cache-dir --upgrade pip && \
     pip install --no-cache-dir -r requirements.txt
 
 # Copy application code
-COPY . .
+COPY src/ ./src/
+COPY main.py .
+COPY requirements.txt .
 
 # Create directories for data and models
-RUN mkdir -p /app/dados /app/modelos /app/logs
+RUN mkdir -p /app/data /app/logs
 
 # Expose port for potential web interface
 EXPOSE 5000
 
 # Default command - can be overridden in docker-compose
-CMD ["python", "ia_principal/main.py"]
+CMD ["python", "main.py"]

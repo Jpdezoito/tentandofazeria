@@ -7,8 +7,8 @@ services:
     ports:
       - "5000:5000"
     volumes:
-      - ./dados:/app/dados
-      - ./modelos:/app/modelos
+      - ./data:/app/data
+      - ./src:/app/src
       - ./logs:/app/logs
     environment:
       - PYTHONPATH=/app

@@ -8,11 +8,11 @@ import json
 import requests
 import time
 import torch
-from rna import RNAConversa
-from avaliador import Avaliador
+from src.core.rna import RNAConversa
+from src.core.avaliador import Avaliador
 import pypdf as PyPDF2
 
-def load_local_data(diretorio='dados'):
+def load_local_data(diretorio='data/raw'):
     dados = []
     arquivos_carregados = []
     total_arquivos = 0
